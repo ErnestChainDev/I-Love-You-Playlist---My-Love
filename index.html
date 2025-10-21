@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I Love You</title>
+  <link rel="shortcut icon" href="./icon.png" type="image/x-icon">
+  <link rel="stylesheet" href="main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <style>
+    /* Playlist Styles */
+    #playlist-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      z-index: 999;
+      max-width: 300px;
+    }
+
+    #playlist-container h3 {
+      margin: 0 0 10px 0;
+      font-family: 'Dancing Script', cursive;
+      color: #e91e63;
+    }
+
+    .song-item {
+      padding: 8px;
+      margin: 5px 0;
+      background: rgba(255, 192, 203, 0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    .song-item:hover {
+      background: rgba(255, 192, 203, 0.6);
+      transform: translateX(5px);
+    }
+
+    .song-item.active {
+      background: rgba(233, 30, 99, 0.5);
+      color: white;
+    }
+
+    #now-playing {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="drag-container">
+    <div id="spin-container">
+      <img src="./img/img1.jpg" alt="">
+      <img src="./img/img2.jpg" alt="">
+      <img src="./img/img3.jpg" alt="">
+      <img src="./img/img4.jpg" alt="">
+      <img src="./img/img5.jpg" alt="">
+      <img src="./img/img6.jpg" alt="">
+      <img src="./img/img7.jpg" alt="">
+      <img src="./img/img8.jpg" alt="">
+      <img src="./img/img9.jpg" alt="">
+      <img src="./img/img10.jpg" alt="">
+      <img src="./img/img11.jpg" alt="">
+      <p>My Love</p>
+    </div>
+    <div id="ground"></div>
+  </div>
+
+  <div id="music-container"></div>
+  <div id="canva">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <!-- Playlist Container -->
+  <div id="playlist-container">
+    <h3>♫ Playlist</h3>
+    <div id="now-playing">Now Playing: ...</div>
+    <div id="playlist"></div>
+  </div>
+
+  <!-- Audio Element - TANGGALIN ANG LOOP! -->
+  <audio id="bg-music"></audio>
+
+  <script>
+    // Define your playlist here
+    const playlist = [
+      { title: "Bubbly", artist: "Colbie Caillat", src: "./Colbie Caillat - Bubbly (Lyrics).mp3" },
+      { title: "Realize", artist: "Colbie Caillat", src: "./Realize - Colbie Caillat (Lyrics).mp3" },
+      { title: "Walang Iba", artist: "Ezra Band", src: "./Walang Iba.mp3" },
+      { title: "When I Met You", artist: "Justin Vasquez", src: "./When I Met You.mp3" }
+    ];
+
+    let currentSongIndex = 0;
+    const audio = document.getElementById("bg-music");
+    const playlistDiv = document.getElementById("playlist");
+    const nowPlayingDiv = document.getElementById("now-playing");
+
+    // Create playlist UI
+    playlist.forEach((song, index) => {
+      const songItem = document.createElement("div");
+      songItem.className = "song-item";
+      songItem.textContent = `${song.title} - ${song.artist}`;
+      songItem.onclick = () => playSong(index);
+      playlistDiv.appendChild(songItem);
+    });
+
+    // Play specific song
+    function playSong(index) {
+      currentSongIndex = index;
+      audio.src = playlist[index].src;
+      audio.play();
+      updatePlaylist();
+    }
+
+    // Update active song in playlist
+    function updatePlaylist() {
+      const items = document.querySelectorAll(".song-item");
+      items.forEach((item, i) => {
+        item.classList.toggle("active", i === currentSongIndex);
+      });
+      nowPlayingDiv.textContent = `Now Playing: ${playlist[currentSongIndex].title}`;
+    }
+
+    // Auto-play next song when current ends
+    audio.addEventListener("ended", () => {
+      currentSongIndex = (currentSongIndex + 1) % playlist.length;
+      playSong(currentSongIndex);
+    });
+
+    // Play button for user interaction
+    const playButton = document.createElement("button");
+    playButton.textContent = "▶ Click to Play Music";
+    playButton.style.position = "fixed";
+    playButton.style.top = "50%";
+    playButton.style.left = "50%";
+    playButton.style.transform = "translate(-50%, -50%)";
+    playButton.style.fontSize = "1.2rem";
+    playButton.style.padding = "10px 20px";
+    playButton.style.borderRadius = "10px";
+    playButton.style.border = "none";
+    playButton.style.cursor = "pointer";
+    playButton.style.background = "rgba(255, 192, 203, 0.8)";
+    playButton.style.fontFamily = "'Dancing Script', cursive";
+    playButton.style.zIndex = "1000";
+
+    document.body.appendChild(playButton);
+
+    playButton.addEventListener("click", () => {
+      playSong(0);
+      playButton.remove();
+    });
+  </script>
+
+  <script src="main.js"></script>
+</body>
+</html>
